@@ -39,7 +39,35 @@ pipeline {
 
         stage("test") {
             steps {
-                echo 'testing the application...'    
+                echo 'testing the application...'  
+                
+                script {
+                        // Use SSH to check if the container exists. 
+                        // If not exists, capture error so Jenkins can continue.
+                        def containerExists = sh(script: 'docker stop "${containerName}"', returnStatus: true)
+
+                        echo "containerExists: $containerExists"
+                }
+
+                sh '''docker run -d \
+                        -p 7010:7010 \
+                        -e PORT=7010 \
+                        -e API_VERSION=1 \
+                        --rm \
+                        --name ${containerName} \
+                        --network monitoring \
+                        -v /var/run/docker.sock:/var/run/docker.sock \
+                        -v capstone_home:/var/capstone_home \
+                        stoicllama/${containerName}:${version}
+                        
+                        docker ps
+                '''
+
+                sh 'docker exec -it ${containerName} sh'
+
+                sh 'npm test'
+
+                sh '/var/lib/docker/volumes/capstone_home/_data/validate_test_results.sh'  
             }
         }
 

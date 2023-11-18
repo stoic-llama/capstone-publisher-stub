@@ -63,11 +63,12 @@ pipeline {
                         docker ps
                 '''
 
+'
                 sh 'docker exec ${containerName} sh'
 
-                sh 'jest'
+                sh 'npm run test'
 
-                sh '/var/lib/docker/volumes/capstone_home/_data/validate_test_results.sh'  
+                sh '/var/capstone_home/validate_test_results.sh'  
             }
         }
 

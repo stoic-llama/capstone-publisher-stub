@@ -65,7 +65,7 @@ pipeline {
 
                 sh 'docker exec ${containerName} sh'
 
-                sh 'npm test'
+                sh 'jest'
 
                 sh '/var/lib/docker/volumes/capstone_home/_data/validate_test_results.sh'  
             }

@@ -63,7 +63,7 @@ pipeline {
                         docker ps
                 '''
 
-                sh 'docker exec -it ${containerName} sh'
+                sh 'docker exec ${containerName} sh'
 
                 sh 'npm test'
 

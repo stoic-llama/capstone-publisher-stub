@@ -63,11 +63,12 @@ pipeline {
                         docker ps
                 '''
 
-                sh 'docker exec ${containerName} sh'
-
-                sh 'npm run test'
-
-                sh '/var/capstone_home/validate_test_results.sh'  
+                sh '''docker exec ${containerName} sh
+                    
+                        npm run test
+                        
+                        /var/capstone_home/validate_test_results.sh
+                '''
             }
         }
 

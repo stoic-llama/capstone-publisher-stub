@@ -92,12 +92,16 @@ pipeline {
                 // Note: need --rm when docker run.. so that docker stop can kill it cleanly
                 withCredentials([
                     string(credentialsId: 'website', variable: 'WEBSITE'),
+                    string(credentialsId: 'mongodb_metrics', variable: 'MONGODB_METRICS'),
+                    string(credentialsId: 'jenkins_api_key', variable: 'JENKINS_API_KEY')                    
                 ]) {
                     sh '''
                         ssh -i /var/jenkins_home/.ssh/website_deploy_rsa_key ${WEBSITE} "docker run -d \
                         -p 7010:7010 \
                         -e PORT=7010 \
                         -e API_VERSION=1 \
+                        -e DATABASE_URL=${MONGODB_METRICS} \
+                        -e JENKINS_API_KEY=${JENKINS_API_KEY} \
                         --rm \
                         --name ${containerName} \
                         --network monitoring \

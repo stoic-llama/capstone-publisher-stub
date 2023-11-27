@@ -28,8 +28,8 @@ const publisher = (req, res) => {
 
     try {
         Promise.all([
-            createAvailability(heartbeat),
-            createDevops(heartbeat),
+            // createAvailability(heartbeat),
+            // createDevops(heartbeat),
         ])
         .then( () => {
             // need the latest heartbeat data inserted into database
@@ -221,9 +221,11 @@ const createDashboard = async (heartbeat) => {
     let builds = [] // from Devops collection
     let summary = []
     let today = new Date()
-    let month = today.getMonth()     // 10 (Month is 0-based, so 10 means 11th Month)
+    let month = today.getMonth() + 1    // 10 (Month is 0-based, so 10 means 11th Month)
     let year = today.getFullYear()   // 2020
     let currentDate = `${year}-${month}`
+    console.log("currentDate")
+    console.log(currentDate)
 
     // This is a list of projects/apps.
     heartbeat.jenkins.map((project) => {
@@ -310,12 +312,16 @@ const createDashboard = async (heartbeat) => {
     });
 
     // Step 3 - timeToProd Metric
-    summary.forEach(item => {
+    summary.forEach(item => {        
         let currentMonthBuilds = item.builds.filter(build => build.timestamp.startsWith(currentDate));
-        let sumDuration = currentMonthBuilds.reduce((total, build) => total + build.duration, 0)
+        
+        let sumDuration = 0
+        for (const build of currentMonthBuilds) {
+            sumDuration += build.duration
+        } 
+        
         let averageDuration = currentMonthBuilds.length > 0 ? sumDuration / currentMonthBuilds.length : 0
-        item.timeToProd = new Date(averageDuration).getMinutes()
-
+        item.timeToProd = Math.ceil(averageDuration / (1000)) // new Date(averageDuration).getMinutes()
     });
 
     // Step 4 - freqToProd Metric
@@ -325,7 +331,8 @@ const createDashboard = async (heartbeat) => {
         item.freqToProd = successBuilds.length
     });
 
-    // Step 5 - Mean Time To Resolution (mttr) Metric
+    // Step 5 - Mean Time To Resolution (mttr) Metric 
+    // Note: Uses availability raw data.
     summary.forEach(summaryItem => {
         let mttrArr = getMTTR(availability)
         mttrArr.forEach( mttrArrItem => {
@@ -338,7 +345,7 @@ const createDashboard = async (heartbeat) => {
         }
     )
 
-    // Step 6 - changeFailRate Metric
+    // Step 6 - changeFailRate Metric 
     summary.forEach(item => {
         let currentMonthBuilds = item.builds.filter(build => build.timestamp.startsWith(currentDate));
         let totalBuilds = currentMonthBuilds.length

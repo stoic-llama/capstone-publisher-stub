@@ -112,7 +112,7 @@ const createDevops = function (heartbeat) {
                 maxBodyLength: Infinity,
                 url: project.url,
                 headers: {
-                    Authorization: `Basic ${api}`,
+                    Authorization: "Basic" + `${api}`,
                 },
             };
   

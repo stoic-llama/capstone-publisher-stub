@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        version = '1.1'
+        version = '1.2'
         containerName = 'capstone-publisher-stub'
     }
 

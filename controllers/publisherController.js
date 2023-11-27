@@ -106,18 +106,23 @@ const createDevops = function (heartbeat) {
     // Now we are flattening the data structure projects --> builds level.
     Promise.all(
         projects.map((project) => {
-            let api = "Basic" + " " + process.env.JENKINS_API_KEY
-            let config = {
-                method: 'get',
-                maxBodyLength: Infinity,
-                url: project.url,
-                headers: {
-                    Authorization: api,
-                },
-            };
+            // let api = "Basic" + " " + process.env.JENKINS_API_KEY
+            // let config = {
+            //     method: 'get',
+            //     maxBodyLength: Infinity,
+            //     url: project.url,
+            //     headers: {
+            //         Authorization: api,
+            //     },
+            // };
   
             return axios
-                .request(config)
+                // .request(config)
+                .get(project.url, {
+                    headers: {
+                        Authorization: `Basic ${process.env.JENKINS_API_KEY}`,
+                    }
+                })
                 .then((response) => {
                     response.data.builds.forEach((build) => {
                         builds.push({

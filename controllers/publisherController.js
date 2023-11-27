@@ -28,8 +28,8 @@ const publisher = (req, res) => {
 
     try {
         Promise.all([
-            // createAvailability(heartbeat),
-            // createDevops(heartbeat),
+            createAvailability(heartbeat),
+            createDevops(heartbeat),
         ])
         .then( () => {
             // need the latest heartbeat data inserted into database
@@ -319,7 +319,7 @@ const createDashboard = async (heartbeat) => {
         for (const build of currentMonthBuilds) {
             sumDuration += build.duration
         } 
-        
+
         let averageDuration = currentMonthBuilds.length > 0 ? sumDuration / currentMonthBuilds.length : 0
         item.timeToProd = Math.ceil(averageDuration / (1000)) // new Date(averageDuration).getMinutes()
     });
@@ -356,27 +356,25 @@ const createDashboard = async (heartbeat) => {
     // Step 7 - add timestamp to all items in summary
     summary.forEach(item => item.timestamp = formattedDateNow())
 
-    console.log("summary")
-    console.log(summary)
     // Step 8 - insertMany into MongoDb database Metrics collection Dashboard
-    // try {
-    //     console.log("trying insertMany now...")
+    try {
+        console.log("trying insertMany now...")
 
-    //     const result = await Dashboard.insertMany(summary);	 
-    //     console.log("result")
-    //     console.log(result)
+        const result = await Dashboard.insertMany(summary);	 
+        console.log("result")
+        console.log(result)
 
-    //     console.log(`${result.length} apps were inserted into Dashboard collection`);
+        console.log(`${result.length} apps were inserted into Dashboard collection`);
         
-    //     return {
-    //         message: `${result.length} apps were inserted into Dashboard collection`,
-    //         timestamp: formattedDateNow()
-    //     }    
-    // } catch (err) {
-    //     console.log("there was an error with insertMany: ")
-    //     console.log(err)
-    //     return {message: err.message}
-    // }
+        return {
+            message: `${result.length} apps were inserted into Dashboard collection`,
+            timestamp: formattedDateNow()
+        }    
+    } catch (err) {
+        console.log("there was an error with insertMany: ")
+        console.log(err)
+        return {message: err.message}
+    }
 }
 
 

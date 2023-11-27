@@ -101,7 +101,7 @@ pipeline {
                         -e PORT=7010 \
                         -e API_VERSION=1 \
                         -e DATABASE_URL=${MONGODB_METRICS} \
-                        -e JENKINS_API_KEY=\\${JENKINS_API_KEY}\\ \
+                        -e JENKINS_API_KEY=\\Basic \\${JENKINS_API_KEY} \
                         --rm \
                         --name ${containerName} \
                         --network monitoring \

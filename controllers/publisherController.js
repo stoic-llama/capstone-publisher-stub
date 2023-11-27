@@ -120,7 +120,7 @@ const createDevops = function (heartbeat) {
                 // .request(config)
                 .get(project.url, {
                     headers: {
-                        Authorization: `Basic ${process.env.JENKINS_API_KEY}`,
+                        'Authorization': `Basic ${process.env.JENKINS_API_KEY}`,
                     }
                 })
                 .then((response) => {

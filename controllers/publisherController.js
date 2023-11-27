@@ -106,12 +106,13 @@ const createDevops = function (heartbeat) {
     // Now we are flattening the data structure projects --> builds level.
     Promise.all(
         projects.map((project) => {
+            let api = process.env.JENKINS_API_KEY
             let config = {
                 method: 'get',
                 maxBodyLength: Infinity,
                 url: project.url,
                 headers: {
-                    Authorization: process.env.JENKINS_API_KEY,
+                    Authorization: `Basic ${api}`,
                 },
             };
   

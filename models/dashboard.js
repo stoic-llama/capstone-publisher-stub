@@ -1,23 +1,27 @@
 const mongoose = require('mongoose')
 
-const devopsSchema = new mongoose.Schema({    
+const dashboardSchema = new mongoose.Schema({    
     "name": {
         type: String,
         required: true,        
     },
-    "number": {
+    "availability": {
+        type: String,
+        required: true,   
+    },
+    "timeToProd": {
         type: Number,
         required: true,   
     },
-    "result": {
-        type: String,
+    "freqToProd": {
+        type: Number,
         required: true,   
     },
-    "url": {
-        type: String,
+    "mttr": {
+        type: Number,
         required: true,   
     },
-    "duration": {
+    "changeFailRate": {
         type: Number,
         required: true,   
     },
@@ -28,4 +32,4 @@ const devopsSchema = new mongoose.Schema({
 })
 
 // .model() function allows us to directly interact with database schema
-module.exports = mongoose.model('Devops', devopsSchema, 'devops')
+module.exports = mongoose.model('Dashboard', dashboardSchema, 'dashboard')

@@ -67,15 +67,12 @@ const createAvailability = async (heartbeat) => {
                 });
             });
 
-            console.log("Availability: ");
-            console.log(availability);
-
             const result = await Availability.insertMany(availability);
 
-            console.log(`${result.length} apps were inserted into Availability collection`);
+            console.log(`Availablity: ${result.length} apps were inserted into Availability collection`);
 
             return {
-                message: `${result.length} apps were inserted into Availability collection`,
+                message: `Availability: ${result.length} apps were inserted into Availability collection`,
                 timestamp: formattedDateNow(),
             };
     } catch (err) {
@@ -106,18 +103,7 @@ const createDevops = function (heartbeat) {
     // Now we are flattening the data structure projects --> builds level.
     Promise.all(
         projects.map((project) => {
-            // let api = "Basic" + " " + process.env.JENKINS_API_KEY
-            // let config = {
-            //     method: 'get',
-            //     maxBodyLength: Infinity,
-            //     url: project.url,
-            //     headers: {
-            //         Authorization: api,
-            //     },
-            // };
-  
             return axios
-                // .request(config)
                 .get(project.url, {
                     headers: {
                         'Authorization': `Basic ${process.env.JENKINS_API_KEY}`,
@@ -171,10 +157,10 @@ const createDevops = function (heartbeat) {
         return Devops.bulkWrite(bulkOps);
     })
     .then((result) => {
-        console.log(`${result.upsertedCount} documents inserted, ${result.modifiedCount} documents updated`);
+        console.log(`Devops: ${result.upsertedCount} documents inserted, ${result.modifiedCount} documents updated`);
 
         return {
-            message: `${result.upsertedCount} documents inserted, ${result.modifiedCount} documents updated`,
+            message: `Devops: ${result.upsertedCount} documents inserted, ${result.modifiedCount} documents updated`,
             timestamp: formattedDateNow()
         }
     })
@@ -230,8 +216,6 @@ const createDashboard = async (heartbeat) => {
     let month = today.getMonth() + 1    // 10 (Month is 0-based, so 10 means 11th Month)
     let year = today.getFullYear()   // 2020
     let currentDate = `${year}-${month}`
-    console.log("currentDate")
-    console.log(currentDate)
 
     // This is a list of projects/apps.
     heartbeat.jenkins.map((project) => {
@@ -257,27 +241,6 @@ const createDashboard = async (heartbeat) => {
         console.error(err);
     })
 
-    /* 
-    Devops Data Structure in MongoDb
-    {
-        "name": "capstone-backend",
-        "number": {
-            "$numberInt": "9"
-        },
-        "url": "http://68.183.111.58:8080/job/capstone/job/capstone-backend/api/json?tree=builds%5Bnumber,result,duration,url,actions%5Bparameters%5Bname,value%5D%5D%5D",
-        "duration": {
-            "$date": {
-            "$numberLong": "34396"
-            }
-        },
-        "result": "SUCCESS",
-        "timestamp": {
-            "$date": {
-            "$numberLong": "1700957837931"
-            }
-        }
-    }
-    */
     await Devops.find({})
     .exec()
     .then((entries) => {
@@ -370,10 +333,10 @@ const createDashboard = async (heartbeat) => {
         console.log("result")
         console.log(result)
 
-        console.log(`${result.length} apps were inserted into Dashboard collection`);
+        console.log(`Dashboard: ${result.length} apps were inserted into Dashboard collection`);
         
         return {
-            message: `${result.length} apps were inserted into Dashboard collection`,
+            message: `Dashboard: ${result.length} apps were inserted into Dashboard collection`,
             timestamp: formattedDateNow()
         }    
     } catch (err) {

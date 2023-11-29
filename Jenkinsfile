@@ -1,7 +1,11 @@
+def getCommitSha() {
+    return sh(returnStdout: true, script: 'git rev-parse HEAD')
+}
+
 pipeline {
     agent any
     environment {
-        version = '1.2'
+        version = getCommitSha() // '1.2'
         containerName = 'capstone-publisher-stub'
     }
 

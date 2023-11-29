@@ -28,13 +28,13 @@ const publisher = (req, res) => {
 
     try {
         Promise.all([
-            // createAvailability(heartbeat),
+            createAvailability(heartbeat),
             createDevops(heartbeat),
         ])
         .then( () => {
             // need the latest heartbeat data inserted into database
             // createDashboard calculates metrics based on what is in database
-            // createDashboard(heartbeat)
+            createDashboard(heartbeat)
         })
         .then( (value) => {
             console.log(value)
@@ -327,7 +327,7 @@ const createDashboard = async (heartbeat) => {
         } 
 
         let averageDuration = currentMonthBuilds.length > 0 ? sumDuration / currentMonthBuilds.length : 0
-        item.timeToProd = Math.ceil(averageDuration / (1000)) // new Date(averageDuration).getMinutes()
+        item.timeToProd = Math.ceil(averageDuration / (1000)) // convert milliseconds to seconds
     });
 
     // Step 4 - freqToProd Metric

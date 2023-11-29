@@ -28,13 +28,13 @@ const publisher = (req, res) => {
 
     try {
         Promise.all([
-            createAvailability(heartbeat),
+            // createAvailability(heartbeat),
             createDevops(heartbeat),
         ])
         .then( () => {
             // need the latest heartbeat data inserted into database
             // createDashboard calculates metrics based on what is in database
-            createDashboard(heartbeat)
+            // createDashboard(heartbeat)
         })
         .then( (value) => {
             console.log(value)

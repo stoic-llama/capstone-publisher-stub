@@ -36,8 +36,7 @@ const publisher = (req, res) => {
             // createDashboard calculates metrics based on what is in database
             createDashboard(heartbeat)
         })
-        .then( (value) => {
-            console.log(value)
+        .then( () => {
             res.status(200).json({
                 message: "Message received!",
                 timestamp: formattedDateNow() 
@@ -69,10 +68,10 @@ const createAvailability = async (heartbeat) => {
 
             const result = await Availability.insertMany(availability);
 
-            console.log(`Availablity: ${result.length} apps were inserted into Availability collection`);
+            console.log(`Availablity: ${result.length} documents were inserted into Availability collection`);
 
             return {
-                message: `Availability: ${result.length} apps were inserted into Availability collection`,
+                message: `Availability: ${result.length} documents were inserted into Availability collection`,
                 timestamp: formattedDateNow(),
             };
     } catch (err) {
@@ -230,6 +229,8 @@ const createDashboard = async (heartbeat) => {
     .exec()
     .then((entries) => {
         availability = entries.map((item) => {
+            // let status = item.message === 'OK' ? 'UP' : 'DOWN'
+            // console.log(item.name + ": " + status + "| Original: " + item.message)
             return {
                 name: item.name,
                 message: item.message === 'OK' ? 'UP' : 'DOWN',
@@ -255,9 +256,9 @@ const createDashboard = async (heartbeat) => {
     // Step 2 - Availability Metric
     projects.forEach( project => {
         let projectAvailability = availability.filter(availability => project.name === availability.name)
-        
+
         // Initialize the latestItem with the first element
-        let latestItem = projectAvailability[0].message;
+        let latestItem = projectAvailability[0];
 
         // Find the item with the latest timestamp
         for (let i = 1; i < projectAvailability.length; i++) {
@@ -268,8 +269,7 @@ const createDashboard = async (heartbeat) => {
                 latestItem = projectAvailability[i];
             }
         }
-
-        project.availability = latestItem.message === 'OK' ? 'UP' : 'DOWN'
+        project.availability = latestItem.message
     })
 
     summary = projects.map(project => {
@@ -333,10 +333,10 @@ const createDashboard = async (heartbeat) => {
         console.log("result")
         console.log(result)
 
-        console.log(`Dashboard: ${result.length} apps were inserted into Dashboard collection`);
+        console.log(`Dashboard: ${result.length} documents were inserted into Dashboard collection`);
         
         return {
-            message: `Dashboard: ${result.length} apps were inserted into Dashboard collection`,
+            message: `Dashboard: ${result.length} documents were inserted into Dashboard collection`,
             timestamp: formattedDateNow()
         }    
     } catch (err) {

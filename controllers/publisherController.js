@@ -116,6 +116,7 @@ const createDevops = function (heartbeat) {
                             result: build.result,
                             url: project.url,
                             duration: build.duration,
+                            timestamp: build.timestamp
                         });
                     });
                 })
@@ -131,15 +132,15 @@ const createDevops = function (heartbeat) {
             updateOne: {
                 filter: { name: build.name, number: build.number },
                 update: {
-                    $set: {
+                    $set: { // Sets the value of a field in a document.
                         name: build.name,
                         number: build.number,
                         result: build.result,
                         url: build.url,
                         duration: build.duration,
-                        timestamp: formattedDateNow()
+                        // timestamp: formattedDateNow()
                     },
-                    $addToSet: {
+                    $addToSet: { // Adds elements to an array ONLY if element not already exist in the set.
                         builds: {
                             name: build.name,
                             number: build.number,
@@ -148,6 +149,9 @@ const createDevops = function (heartbeat) {
                             duration: build.duration,
                             timestamp: formattedDateNow()
                         },
+                    },
+                    $setOnInsert: {
+                        timestamp: { $exists: false } // Only set if the field doesn't exist
                     },
                 },
                 upsert: true, // Create a new document if not found

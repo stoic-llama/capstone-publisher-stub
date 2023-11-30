@@ -138,29 +138,30 @@ const createDevops = function (heartbeat) {
                     //     result: build.result,
                     //     url: build.url,
                     //     duration: build.duration,
-                    //     // timestamp: formattedDateNow()
                     // },
-                    $addToSet: { // Adds elements to an array ONLY if element not already exist in the set. 
-                        builds: {
-                            name: build.name,
-                            number: build.number,
-                            result: build.result,
-                            url: build.url,
-                            duration: build.duration,
-                            timestamp: formattedDateNow()
-                        },
-                    },
+                    // $addToSet: { // Adds elements to an array ONLY if element not already exist in the set. 
+                    //     builds: {
+                    //         name: build.name,
+                    //         number: build.number,
+                    //         result: build.result,
+                    //         url: build.url,
+                    //         duration: build.duration,
+                    //         timestamp: formattedDateNow()
+                    //     },
+                    // },
                     /*  
                         In this modification, the $setOnInsert operator ensures that the timestamp
-                        field is only set when a new document is created (i.e., during the 
-                        upsert operation) and obviously when the timestamp field exists. 
-
+                        field is only set when a new document is created. 
                         If the document is already created, the $setOnInsert part won't be executed. 
-                        As a result, the existing timestamp value won't be modified as well.
                     */
-                    // $setOnInsert: {
-                    //     timestamp: { $exists: false } 
-                    // },
+                    $setOnInsert: {
+                        name: build.name,
+                        number: build.number,
+                        result: build.result,
+                        url: build.url,
+                        duration: build.duration,
+                        timestamp: formattedDateNow()
+                    },
                 },
                 upsert: true, // Create a new document if not found
             },

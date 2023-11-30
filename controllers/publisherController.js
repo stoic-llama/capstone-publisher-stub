@@ -132,15 +132,15 @@ const createDevops = function (heartbeat) {
             updateOne: {
                 filter: { name: build.name, number: build.number },
                 update: {
-                    $set: { // Sets the value of a field in a document.
-                        name: build.name,
-                        number: build.number,
-                        result: build.result,
-                        url: build.url,
-                        duration: build.duration,
-                        // timestamp: formattedDateNow()
-                    },
-                    $addToSet: { // Adds elements to an array ONLY if element not already exist in the set.
+                    // $set: { // Sets the value of a field in a document. 
+                    //     name: build.name,
+                    //     number: build.number,
+                    //     result: build.result,
+                    //     url: build.url,
+                    //     duration: build.duration,
+                    //     // timestamp: formattedDateNow()
+                    // },
+                    $addToSet: { // Adds elements to an array ONLY if element not already exist in the set. 
                         builds: {
                             name: build.name,
                             number: build.number,
@@ -150,9 +150,17 @@ const createDevops = function (heartbeat) {
                             timestamp: formattedDateNow()
                         },
                     },
-                    $setOnInsert: {
-                        timestamp: { $exists: false } // Only set if the field doesn't exist
-                    },
+                    /*  
+                        In this modification, the $setOnInsert operator ensures that the timestamp
+                        field is only set when a new document is created (i.e., during the 
+                        upsert operation) and obviously when the timestamp field exists. 
+
+                        If the document is already created, the $setOnInsert part won't be executed. 
+                        As a result, the existing timestamp value won't be modified as well.
+                    */
+                    // $setOnInsert: {
+                    //     timestamp: { $exists: false } 
+                    // },
                 },
                 upsert: true, // Create a new document if not found
             },

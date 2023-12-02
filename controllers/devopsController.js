@@ -4,6 +4,34 @@ const axios = require('axios');
 const { formattedDateNow } = require('../parsers/getTimestamp')
 const Devops = require('../models/devops')
 
+
+const devopsWrapper = async (req, res) => {
+    const heartbeat = {
+        "agentID": req.body.agentID,
+        "contact": req.body.contact,
+        "contact_email": req.body.contact_email,
+        "restart": req.body.restart,
+        "jenkins": req.body.jenkins,
+        "createdOn": req.body.createdOn,
+        // "allNodes": req.body.allNodes,
+        // "liveNodes": req.body.liveNodes,
+        // "deadNodes": req.body.deadNodes,
+        "appStatus": req.body.appStatus
+    }
+
+    let response = await createDevops(heartbeat)
+
+    try {
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({
+            message: `Something went wrong with the devops: ${error.message}`,
+            timestamp: formattedDateNow() 
+        });
+    }
+}
+
+
 function createDevops(heartbeat) {
     return new Promise(resolve => {
         // Initialize variables
@@ -112,5 +140,6 @@ function createDevops(heartbeat) {
 };
 
 module.exports = {
-    createDevops
+    createDevops,
+    devopsWrapper
 };

@@ -5,6 +5,32 @@ const Availability = require('../models/availability')
 const Devops = require('../models/devops')
 const Dashboard = require('../models/dashboard')
 
+const dashboardWrapper = async (req, res) => {
+    const heartbeat = {
+        "agentID": req.body.agentID,
+        "contact": req.body.contact,
+        "contact_email": req.body.contact_email,
+        "restart": req.body.restart,
+        "jenkins": req.body.jenkins,
+        "createdOn": req.body.createdOn,
+        // "allNodes": req.body.allNodes,
+        // "liveNodes": req.body.liveNodes,
+        // "deadNodes": req.body.deadNodes,
+        "appStatus": req.body.appStatus
+    }
+
+    let response = await createDashboard(heartbeat)
+
+    try {
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({
+            message: `Something went wrong with the dashboard: ${error.message}`,
+            timestamp: formattedDateNow() 
+        });
+    }
+}
+
 
 const createDashboard = async (heartbeat) => {
     // Step 1 - Initialize variables
@@ -245,5 +271,6 @@ function getMTTR(availability) {
 }
 
 module.exports = {
-    createDashboard
+    createDashboard,
+    dashboardWrapper
 };
